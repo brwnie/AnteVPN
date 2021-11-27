@@ -32,3 +32,12 @@ AnteVPN was created as I struggled with the source code and set-up of Anti-VPN (
 
 I also struggle with how version control systems work, so I figured I would give it a go.
 
+## Installation
+
+Grab the .jar from the [releases](https://github.com/brwnie/AnteVPN/releases) page and pop into the plugins folder
+
+After first start-up, a SQLite database will be generated along with a configuration file
+
+The configuration file is used to put the API keys from the various providers so the plugin can communicate with them.
+
+Generally the plugin will block on the first bad result reported, and it requires two successful checks to allow an IP to be authenticated
