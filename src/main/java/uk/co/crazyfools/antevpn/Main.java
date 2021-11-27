@@ -521,7 +521,7 @@ public class Main extends JavaPlugin {
         sender.sendMessage("Number of IPs in bad cache: " + cachedBadAddresses.size());
         sender.sendMessage("Number of usernames in saved whitelist: " + cachedWhitelistUuid.size());
         sender.sendMessage("Number of IPs in saved whitelist: " + cachedWhitelistIp.size());
-        sender.sendMessage("Number of disabled providers:" + providerDisabled.size());
+        sender.sendMessage("Number of disabled providers: " + providerDisabled.size());
         sender.sendMessage("---");
     }
 
