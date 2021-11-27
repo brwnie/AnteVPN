@@ -85,7 +85,6 @@ public class Main extends JavaPlugin {
 
     private void loadPluginOptions() {
         // Load plugin options and API keys
-        // TODO: Make enabled actually do something
         File OptionsFile = new File("plugins/AnteVPN/options.yml");
 
         FileConfiguration pluginOptions = YamlConfiguration.loadConfiguration(OptionsFile);
@@ -181,7 +180,6 @@ public class Main extends JavaPlugin {
     private void saveIpWhitelistToDatabase() {
         Main.logMessage("Saving UUIDs to database");
         // Save good unlimited IP addresses to database
-        // TODO: Create and periodic save
         Main.logMessage("Saving good IP addresses into database");
 
         Connection connection = null;
@@ -267,8 +265,6 @@ public class Main extends JavaPlugin {
 
     private void saveUuidWhitelistToDatabase() {
         Main.logMessage("Saving UUIDs to database");
-        // TODO: Create and periodic save
-        Main.logMessage("Saving bad addresses into database");
 
         Connection connection = null;
 
@@ -296,7 +292,6 @@ public class Main extends JavaPlugin {
 
     private void saveBadToDatabase() {
         // Save bad addresses to database
-        // TODO: Create and periodic save
         Main.logMessage("Saving bad addresses into database");
 
         Connection connection = null;

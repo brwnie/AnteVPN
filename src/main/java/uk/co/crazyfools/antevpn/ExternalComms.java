@@ -52,7 +52,6 @@ public class ExternalComms {
         if(jsonObject.containsKey("bad")) {
             if(jsonObject.get("bad").toString().equalsIgnoreCase("true")) {
                 if(jsonObject.get("type").toString().equalsIgnoreCase("proxy")) {
-
                         Main.debugMessage("IPTrooper: VPN Detected on " + address.getHostAddress() + "!");
                     return 1;
                 }
