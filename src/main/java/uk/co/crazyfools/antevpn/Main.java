@@ -72,7 +72,7 @@ public class Main extends JavaPlugin {
 
     private void loadPluginOptions() {
         // Load plugin options and API keys
-
+        // TODO: Make enabled actually do something
         File OptionsFile = new File("plugins/AnteVPN/options.yml");
 
         FileConfiguration pluginOptions = YamlConfiguration.loadConfiguration(OptionsFile);
