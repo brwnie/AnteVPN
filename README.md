@@ -1,6 +1,6 @@
 # AnteVPN
 
-This is the GitHub page of the plugin 'AnteVPN'.
+This is the GitHub page of the plugin 'AnteVPN'. AnteVPN is currently in development and is not suitable for use on production servers.
 
 ## What/Who/Why
 

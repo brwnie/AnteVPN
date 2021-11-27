@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -171,6 +172,21 @@ public class Main extends JavaPlugin {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        if(command.getName().equalsIgnoreCase("avpndebug")) {
+            if(sender instanceof Player) {
+                Player player = (Player)sender;
+                if(player.hasPermission("CFUK.AVPNDebug")) {
+                    debugModeToggle();
+                    return true;
+                }
+            } else {
+                debugModeToggle();
+                return true;
+            }
+        }
+
+
         if(command.getName().equalsIgnoreCase("avpnsim")) {
             if(debugMode == 1) {
                 if(args.length == 1) {
@@ -210,5 +226,13 @@ public class Main extends JavaPlugin {
         }
         // No commands matched here
         return false;
+    }
+
+    private void debugModeToggle() {
+        if(debugMode == 0) {
+            debugMode = 1;
+        } else {
+            debugMode = 2;
+        }
     }
 }

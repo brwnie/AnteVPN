@@ -9,3 +9,7 @@ commands:
     description: Simulates a player login event
     usage: /avpnsim 1.2.3.4
     permission: cfuk.avpnsim
+  avpndebug:
+    description: Toggles debug mode on the plugin
+    usage: /avpndebug
+    permission: cfuk.AVPNDebug
