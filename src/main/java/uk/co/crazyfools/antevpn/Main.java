@@ -123,17 +123,24 @@ public class Main extends JavaPlugin {
         // Start plugin
         logMessage("AnteVPN is now starting up...");
         plugin = this;
+        // Register player listeners
         registerListeners();
+        // Load options into memory
         loadPluginOptions();
+        // Create database tables if not already existing
         createDatabase();
+        // Loading player whitelist and good IP addresses will be done from IsVPN()
     }
 
 
 
     public void onDisable() {
         logMessage("AnteVPN is now shutting down...");
+        // Save previously bad IPs to the database
         saveBadToDatabase();
+        // Save player whitelist to the database
         saveUuidWhitelistToDatabase();
+        // Save good IP addresses to the database
         saveIpWhitelistToDatabase();
     }
 
