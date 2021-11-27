@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.net.InetAddress;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -16,17 +17,12 @@ public class PlayerListener implements Listener {
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
 
         InetAddress playerIp = event.getAddress();
+        UUID playerUuid = event.getUniqueId();
 
-        Main.debugMessage("Login event detected: " + event.getName());
-
-        if(!AnteVPN.onUUIDWhitelist(event.getUniqueId()) || !AnteVPN.onAddressWhitelist(event.getAddress())) {
-            if (AnteVPN.isVPN(playerIp)) {
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Component.text("VPN Detected!"));
-            }
-        } else {
-            if(Main.debugMode == 1) {
-                Main.logMessage(event.getName() + " is on the UUID whitelist.");
-            }
+        if (AnteVPN.isVpn(playerIp, event.getUniqueId())) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Component.text("VPN Detected!"));
         }
+
+
     }
 }

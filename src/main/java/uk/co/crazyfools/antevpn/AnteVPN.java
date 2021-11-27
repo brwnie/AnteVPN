@@ -1,6 +1,5 @@
 package uk.co.crazyfools.antevpn;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.*;
 import java.util.UUID;
@@ -41,7 +40,7 @@ public class AnteVPN {
         if(Main.cachedWhitelistUuid.contains(playerUuid)) {
             return true;
         }
-        
+
         // Check database
         if(onWhiteListUuidDatabase(playerUuid)) {
             // Put the UUID into cache for quicker lookups in future
@@ -52,7 +51,7 @@ public class AnteVPN {
         return false;
     }
 
-    public static boolean isVPN(InetAddress address) {
+    public static boolean isVpn(InetAddress address, UUID uniqueId) {
 
         // Step 1: Check manually added UUID cache
 
