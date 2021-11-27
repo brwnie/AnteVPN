@@ -1,6 +1,6 @@
 main: uk.co.crazyfools.antevpn.Main
 name: AnteVPN
-version: 0.02
+version: 0.03
 api-version: 1.17
 author: CFUK
 description: Anti VPN plugin
