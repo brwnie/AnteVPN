@@ -55,10 +55,19 @@ public class AnteVPN {
 
         // Step 1: Check manually added UUID cache
 
+        Main.debugMessage("Comparing UUID to whitelist...");
+        if(Main.cachedWhitelistUuid.contains(uniqueId)) {
+            return false;
+        }
+
         // Step 2: Check manually added IP cache
+        Main.debugMessage("Comparing IP Address to whitelist...");
+        if(Main.cachedWhitelistIp.contains(address)) {
+            return false;
+        }
 
         // Step 3: Check automatic good IP addresses
-        Main.debugMessage("Running known good addresses in cache.");
+        Main.debugMessage("Comparing IP address to known good cache...");
 
        if(checkGoodCache(address)) {
            return false;
@@ -66,14 +75,14 @@ public class AnteVPN {
 
        // Step 4: Check BOGON IP addresses
 
-        Main.debugMessage("Running BOGON Check");
+        Main.debugMessage("Checking if IP address is a BOGON...");
         if(checkBogons(address)) {
             return false;
         }
 
         // Step 5: Check automatic bad IP addresses
 
-        Main.debugMessage("Running CACHE check");
+        Main.debugMessage("Comparing IP address to known bad cache...");
 
         if(checkBadCache(address)) {
             // Address is in BAD CACHE
@@ -83,7 +92,7 @@ public class AnteVPN {
 
         // Step 6: Check automatic bad IP database lookup
 
-        Main.debugMessage("Running BAD DATABASE check");
+        Main.debugMessage("Looking up IP address in known bad database...");
 
         if(checkBadDatabase(address)) {
             return true;
@@ -91,7 +100,7 @@ public class AnteVPN {
 
         // Step 7: Go to IP address reputation providers to run a check
 
-        Main.debugMessage("Running VPN check");
+        Main.debugMessage("Sending IP address to IP reputation checkers...");
 
 
         if(lookupAddress(address)) {
@@ -99,13 +108,15 @@ public class AnteVPN {
             return true;
         }
 
+        Main.debugMessage("IP address is determined safe.");
+
         return false;
     }
 
     private static boolean checkGoodCache(InetAddress address) {
         if(Main.cachedGoodAddresses.containsKey(address)) {
             // Check age on the address
-            if(Main.cachedGoodAddresses.get(address) != 0L && System.currentTimeMillis() > Main.cachedGoodAddresses.get(address) + 86400000) {
+            if(System.currentTimeMillis() > Main.cachedGoodAddresses.get(address) + 86400000) {
                 // TODO: Periodic cleanup
                 Main.cachedGoodAddresses.remove(address);
                 return false;
