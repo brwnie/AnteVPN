@@ -18,7 +18,7 @@ import java.sql.*;
 import java.util.*;
 
 public class Main extends JavaPlugin {
-    // PLUGIN NOT SAFE FOR HUMAN OR MACHINE CONSUMPTION
+    // PLUGIN IS NOT SAFE FOR HUMAN OR MACHINE CONSUMPTION
     // VPN Providers
     //
     // PROXYCHECK-IOP
@@ -36,25 +36,25 @@ public class Main extends JavaPlugin {
 
     // Caching
     // Number of approvals an IP address has had
-    static HashMap<InetAddress, Integer> totalAddressChecks = new HashMap<InetAddress, Integer>();
+    static HashMap<InetAddress, Integer> totalAddressChecks = new HashMap<>();
     // Addresses that have already been approved by the plugin
-    static HashMap<InetAddress, Long> cachedGoodAddresses = new HashMap<InetAddress, Long>();
+    static HashMap<InetAddress, Long> cachedGoodAddresses = new HashMap<>();
     // Addresses that have already been denied by the plugin
-    static HashMap<InetAddress, Long> cachedBadAddresses = new HashMap<InetAddress, Long>();
+    static HashMap<InetAddress, Long> cachedBadAddresses = new HashMap<>();
     // TODO: Occasional Cleanup
     // Whitelisted UUIDs
-    static HashMap<UUID, Long> cachedWhitelist = new HashMap<UUID, Long>();
+    static HashMap<UUID, Long> cachedWhitelist = new HashMap<>();
 
     // Violation Flags
     // Number of failed lookups from a provider
-    static HashMap<String, Integer> providerViolations = new HashMap<String, Integer>();
+    static HashMap<String, Integer> providerViolations = new HashMap<>();
 
     // Toggles for VPN Checker Providers is disabled or not
-    static HashMap<String, Long> providerDisabled = new HashMap<String, Long>();
+    static HashMap<String, Long> providerDisabled = new HashMap<>();
 
 
     // API Keys for VPNs
-    static HashMap<String, String> providerKeys = new HashMap<String, String>();
+    static HashMap<String, String> providerKeys = new HashMap<>();
 
     // Log messages to console
     public static void logMessage(String s) {
@@ -120,7 +120,41 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         logMessage("AnteVPN is now shutting down...");
         saveBadToDatabase();
-        saveWhitelistToDatabase();
+        saveUuidWhitelistToDatabase();
+        saveIpWhitelistToDatabase();
+    }
+
+    private void saveIpWhitelistToDatabase() {
+        Main.logMessage("Saving UUIDs to database");
+        // Save good unlimited IP addresses to database
+        // TODO: Create and periodic save
+        Main.logMessage("Saving good IP addresses into database");
+
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(anteDb);
+        } catch (SQLException e) {
+            logMessage("Could not connect to SQL Lite Database");
+        }
+
+        String sql = "INSERT IGNORE INTO ante_good_ip(address, timestamp) SET(?,?)";
+        for(Map.Entry<InetAddress, Long> entry : cachedGoodAddresses.entrySet()) {
+            if(entry.getValue() == 0L) {
+                try (PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+                    prepStatement.setString(1, entry.getKey().getHostAddress());
+                    prepStatement.setInt(2, entry.getValue().intValue());
+                    prepStatement.execute();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createDatabase() {
@@ -134,7 +168,7 @@ public class Main extends JavaPlugin {
 
         String createTableBadAddresses = "CREATE TABLE IF NOT EXISTS ante_bad_address(id integer PRIMARY KEY, address text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
         String createTableGoodUuid = "CREATE TABLE IF NOT EXISTS ante_good_uuid(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
-        String createTableGoodAddress = "CREATE TABLE IF NOT EXISTS ante_good_ip(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
+        String createTableGoodAddress = "CREATE TABLE IF NOT EXISTS ante_good_ip(id integer PRIMARY KEY, address text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
 
         try(Statement statement = connection.createStatement()) {
             try {
@@ -177,9 +211,8 @@ public class Main extends JavaPlugin {
         }
     }
 
-    private void saveWhitelistToDatabase() {
+    private void saveUuidWhitelistToDatabase() {
         Main.logMessage("Saving UUIDs to database");
-        // Save bad addresses to database
         // TODO: Create and periodic save
         Main.logMessage("Saving bad addresses into database");
 
@@ -270,7 +303,6 @@ public class Main extends JavaPlugin {
 
         if(command.getName().equalsIgnoreCase("avpnstatus")) {
             // Shows the service status of the plugin
-            // TODO: Display service status
             if(sender instanceof Player) {
               Player player = (Player)sender;
               if(player.hasPermission("cfuk.avpnadmin")) {
@@ -337,7 +369,7 @@ public class Main extends JavaPlugin {
             // Enables debug mode
             if(sender instanceof Player) {
                 Player player = (Player)sender;
-                if(player.hasPermission("CFUK.avpndebug")) {
+                if(player.hasPermission("cfuk.avpndebug")) {
                     debugModeToggle();
                     return true;
                 }
@@ -392,11 +424,13 @@ public class Main extends JavaPlugin {
 
 
     private void displayServiceStatus(CommandSender sender) {
-        sender.sendMessage("AnteVPN");
+        sender.sendMessage("AnteVPN Alpha Builds");
+        sender.sendMessage("---");
         sender.sendMessage("Number of IPs in good cache: " + cachedGoodAddresses.size());
         sender.sendMessage("Number of IPs in bad cache: " + cachedBadAddresses.size());
         sender.sendMessage("Number of usernames in whitelist: " + cachedWhitelist.size());
         sender.sendMessage("Number of disabled providers:" + providerDisabled.size());
+        sender.sendMessage("---");
     }
 
     private void debugModeToggle() {
