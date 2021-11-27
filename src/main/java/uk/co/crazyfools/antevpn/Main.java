@@ -185,7 +185,7 @@ public class Main extends JavaPlugin {
 
     private void loadGoodAddresses() {
         Connection connection = null;
-        String sql = "SELECT address from ante_good_address;";
+        String sql = "SELECT address from ante_good_ip;";
 
         try {
             connection = DriverManager.getConnection(anteDb);
@@ -198,7 +198,7 @@ public class Main extends JavaPlugin {
             while(results.next()) {
                 cachedWhitelistIp.add(InetAddress.getByName(results.getString("ip")));
             }
-        } catch (SQLException e) {
+        } catch (SQLException | UnknownHostException e) {
             e.printStackTrace();
         }
 
