@@ -82,24 +82,34 @@ public class Main extends JavaPlugin {
 
         if(pluginOptions.isSet("API")) {
            String proxyCheckIo = pluginOptions.getString("API.PROXYCHECK-IO.Key");
+           Boolean proxyCheckIoEnabled = pluginOptions.getBoolean("API.PROXYCHECK-IO.Enabled");
+
            String ipQualityScore = pluginOptions.getString("API.IPQUALITYSCORE.Key");
+           Boolean ipQualityScoreEnabled = pluginOptions.getBoolean("API.IPQUALITYSCORE.Enabled");
+
+           numberChecks = pluginOptions.getInt("Options.Checks.Setting");
+
            if(!proxyCheckIo.isEmpty()) {
                providerKeys.put("PROXYCHECK-IO", proxyCheckIo);
            }
            if(!ipQualityScore.isEmpty()) {
                providerKeys.put("ipQualityScore", ipQualityScore);
            }
+
         } else {
-            pluginOptions.set("API.PROXYCHECK-IO.Enabled", "true");
+            pluginOptions.set("API.PROXYCHECK-IO.Enabled", true);
             pluginOptions.set("API.PROXYCHECK-IO.Key", "");
             pluginOptions.set("API.PROXYCHECK-IO.Comment", "https://proxycheck.io/ - Optional Registration for API Key");
 
-            pluginOptions.set("API.IPQUALITYSCORE.Enabled", "true");
+            pluginOptions.set("API.IPQUALITYSCORE.Enabled", true);
             pluginOptions.set("API.IPQUALITYSCORE.Key", "");
             pluginOptions.set("API.IPQUALITYSCORE.Comment", "https://www.ipqualityscore.com/ - Requires Registration for API Key");
 
-            pluginOptions.set("API.IPTROOPER.Enabled", "true");
+            pluginOptions.set("API.IPTROOPER.Enabled", true);
             pluginOptions.set("API.IPTROOPER.Comment", "https://iptrooper.net/ - No API Key required for free tier");
+
+            pluginOptions.set("Options.Checks.Setting", 1);
+            pluginOptions.set("Options.Checks.Comment", "The number of VPN providers to check against");
 
             try {
                 pluginOptions.save(OptionsFile);
