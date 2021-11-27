@@ -273,7 +273,21 @@ public class Main extends JavaPlugin {
 
         if(command.getName().equalsIgnoreCase("avpnallowip")) {
             // Adds an IP address to permitted IPs
-            // TODO: Complete Feautre
+            if(args.length == 1) {
+                if(sender instanceof Player) {
+                    Player player = (Player)sender;
+                    if(player.hasPermission("cfuk.avpnadmin")) {
+                        InetAddress address;
+                        try {
+                            address = InetAddress.getByName(args[0]);
+                        } catch (UnknownHostException e) {
+                            sender.sendMessage("Invalid IP address!");
+                            return false;
+                        }
+                        cachedGoodAddresses.put(address, 0L);
+                    }
+                }
+            }
             return false;
         }
 
@@ -282,7 +296,7 @@ public class Main extends JavaPlugin {
             if(args.length == 1) {
                 if (sender instanceof Player) {
                     Player player = (Player)sender;
-                    if(player.hasPermission("CFUK.AVPNWhitelist")) {
+                    if(player.hasPermission("cfuk.avpnadmin")) {
                        UUID targetUuid = getUuid(args[0]);
                        cachedWhitelist.put(targetUuid, System.currentTimeMillis());
                        return true;
@@ -353,6 +367,7 @@ public class Main extends JavaPlugin {
         // No commands matched here
         return false;
     }
+
 
     private void displayServiceStatus(CommandSender sender) {
         sender.sendMessage("AnteVPN");
