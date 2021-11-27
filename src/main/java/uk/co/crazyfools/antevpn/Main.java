@@ -204,9 +204,12 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQLite Database!");
         }
 
+        // Bad IP addresses with expiry
         String createTableBadAddresses = "CREATE TABLE IF NOT EXISTS ante_bad_address(id integer PRIMARY KEY, address text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
-        String createTableGoodUuid = "CREATE TABLE IF NOT EXISTS ante_good_uuid(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
-        String createTableGoodAddress = "CREATE TABLE IF NOT EXISTS ante_good_ip(id integer PRIMARY KEY, address text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
+        // Good UUIDs
+        String createTableGoodUuid = "CREATE TABLE IF NOT EXISTS ante_good_uuid(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE);";
+        // Good IP addresses
+        String createTableGoodAddress = "CREATE TABLE IF NOT EXISTS ante_good_ip(id integer PRIMARY KEY, address text NOT NULL UNIQUE);";
 
         try(Statement statement = connection.createStatement()) {
             try {
