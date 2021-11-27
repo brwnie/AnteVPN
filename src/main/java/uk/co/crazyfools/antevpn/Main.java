@@ -99,18 +99,26 @@ public class Main extends JavaPlugin {
 
            numberChecks = pluginOptions.getInt("Options.Checks.Setting");
 
-           if(!proxyCheckIo.isEmpty() || !pluginOptions.getBoolean("API.PROXYCHECK-IO.Enabled")) {
+           if(!proxyCheckIo.isEmpty()) {
                logMessage("Disabling Proxycheck.io");
                providerKeys.put("PROXYCHECK-IO", proxyCheckIo);
            }
 
-            if(!pluginOptions.getBoolean("IPTROOPER.Enabled")) {
-                providerKeys.put("TROOPER", ipQualityScore);
-            }
-
            if(!ipQualityScore.isEmpty() || !pluginOptions.getBoolean("IPQUALITYSCORE.Enabled")) {
                providerKeys.put("IPQUALITYSCORE", ipQualityScore);
            }
+
+            if(!pluginOptions.getBoolean("API.PROXYCHECK-IO.Enabled")) {
+                providerDisabled.put("PROXYCHECK-IO", System.currentTimeMillis());
+            }
+
+            if(!pluginOptions.getBoolean("API.IPTROOPER.Enabled")) {
+               providerDisabled.put("IPTROOPER", System.currentTimeMillis());
+            }
+
+            if(!pluginOptions.getBoolean("API.IPQUALITYSCORE.Enabled")) {
+                providerDisabled.put("IPQUALITYSCORE", System.currentTimeMillis());
+            }
 
         } else {
             pluginOptions.set("API.PROXYCHECK-IO.Enabled", true);
