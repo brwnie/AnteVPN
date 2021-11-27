@@ -100,7 +100,7 @@ public class Main extends JavaPlugin {
            numberChecks = pluginOptions.getInt("Options.Checks.Setting");
 
            if(!proxyCheckIo.isEmpty() || !pluginOptions.getBoolean("API.PROXYCHECK-IO.Enabled")) {
-               logMessage("Disabling Proxycheck.io")
+               logMessage("Disabling Proxycheck.io");
                providerKeys.put("PROXYCHECK-IO", proxyCheckIo);
            }
 
