@@ -356,7 +356,6 @@ public class Main extends JavaPlugin {
 
         if(command.getName().equalsIgnoreCase("avpnallowip")) {
             // Adds an IP address to permitted IPs
-            // TODO: Add straight to database?
             if(args.length == 1) {
                 if(sender instanceof Player) {
                     Player player = (Player)sender;
@@ -386,7 +385,6 @@ public class Main extends JavaPlugin {
 
         if(command.getName().equalsIgnoreCase("avpnallowuser")) {
             // Adds a username to permitted UUIDs
-            // TODO: Add straight to database?
             if(args.length == 1) {
                 if (sender instanceof Player) {
                     Player player = (Player)sender;
