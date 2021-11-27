@@ -228,7 +228,7 @@ public class AnteVPN {
 
     private static boolean permitAccess(InetAddress address) {
         if(Main.totalAddressChecks.containsKey(address)) {
-            if(Main.totalAddressChecks.get(address) >= 1) {
+            if(Main.totalAddressChecks.get(address) >= Main.numberChecks) {
                 Main.cachedGoodAddresses.put(address, System.currentTimeMillis());
                 Main.totalAddressChecks.remove(address);
                 return true;
@@ -314,7 +314,7 @@ public class AnteVPN {
             }
         }
 
-        Main.logMessage("List of IP reputation providers has been exhausted...");
+        Main.logMessage("ERROR: List of IP reputation providers has been exhausted...");
         // No VPN detected after using all providers
         return false;
     }
