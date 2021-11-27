@@ -145,10 +145,11 @@ public class Main extends JavaPlugin {
     }
 
     private void loadGoodUuids() {
-
+        // TODO: Complete this function
     }
 
     private void loadGoodAddresses() {
+        // TODO: Complete this function
     }
 
 
