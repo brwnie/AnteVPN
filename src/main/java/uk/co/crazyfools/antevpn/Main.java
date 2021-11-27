@@ -167,6 +167,7 @@ public class Main extends JavaPlugin {
         saveUuidWhitelistToDatabase();
         // Save good IP addresses to the database
         saveIpWhitelistToDatabase();
+        logMessage("AnteVPN shut down complete.");
     }
 
     private void saveIpWhitelistToDatabase() {
