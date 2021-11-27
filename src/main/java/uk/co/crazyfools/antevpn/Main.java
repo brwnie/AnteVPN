@@ -176,17 +176,14 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQL Lite Database");
         }
 
-        String sql = "INSERT IGNORE INTO ante_good_ip(address, timestamp) SET(?,?)";
-        for(Map.Entry<InetAddress, Long> entry : cachedGoodAddresses.entrySet()) {
-            if(entry.getValue() == 0L) {
+        String sql = "INSERT IGNORE INTO ante_good_ip(address) SET(?)";
+        for(Integer i = 0; i < cachedWhitelistIp.size(); i++) {
                 try (PreparedStatement prepStatement = connection.prepareStatement(sql)) {
-                    prepStatement.setString(1, entry.getKey().getHostAddress());
-                    prepStatement.setInt(2, entry.getValue().intValue());
+                    prepStatement.setString(1, cachedWhitelistIp.get(i).getHostAddress());
                     prepStatement.execute();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-            }
         }
         try {
             connection.close();
