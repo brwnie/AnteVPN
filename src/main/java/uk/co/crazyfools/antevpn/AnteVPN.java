@@ -59,58 +59,48 @@ public class AnteVPN {
 
         // Step 2: Check manually added IP cache
 
-        // Step 3: Check automatic IP cache
-        if(Main.debugMode == 1) {
-            Main.logMessage("Checking already permitted addresses...");
-        }
+        // Step 3: Check automatic good IP addresses
+        Main.debugMessage("Running known good addresses in cache.");
+
        if(checkGoodCache(address)) {
-           if(Main.debugMode == 1) {
-               Main.logMessage("IP is present in good cache");
-           }
            return false;
        }
 
+       // Step 4: Check BOGON IP addresses
 
-
-        // Cheap: BOGON Check
-        if(Main.debugMode == 1) {
-            Main.logMessage("Running BOGON Check");
-        }
+        Main.debugMessage("Running BOGON Check");
         if(checkBogons(address)) {
-            // Address is a BOGON
             return false;
         }
 
-        // Cheap: Cache Check
-        if(Main.debugMode == 1) {
-            Main.logMessage("Running CACHE check");
-        }
+        // Step 5: Check automatic bad IP addresses
+
+        Main.debugMessage("Running CACHE check");
+
         if(checkBadCache(address)) {
             // Address is in BAD CACHE
             return true;
         }
-        // Check Database
-        if(Main.debugMode == 1) {
-            Main.logMessage("Running BAD DATABASE check");
-        }
+
+
+        // Step 6: Check automatic bad IP database lookup
+
+        Main.debugMessage("Running BAD DATABASE check");
+
         if(checkBadDatabase(address)) {
-            // Address is in BAD DATABASE
             return true;
         }
 
-        // Expensive: Address lookup
-        if(Main.debugMode == 1) {
-            Main.logMessage("Running VPN check");
-        }
+        // Step 7: Go to IP address reputation providers to run a check
+
+        Main.debugMessage("Running VPN check");
+
 
         if(lookupAddress(address)) {
-
-            if(Main.debugMode == 1) {
-                Main.logMessage("VPN Detected!");
-            }
             // Address is a VPN
             return true;
         }
+
         return false;
     }
 
@@ -132,27 +122,27 @@ public class AnteVPN {
     private static boolean checkBogons(InetAddress address) {
         if(address.getAddress()[0] == (byte) 0) {
             // 0.0.0.0/0
-            if(Main.debugMode == 1) {
-                Main.logMessage("Matched 0.0.0.0/0 Rule");
-            }
+
+            Main.debugMessage("Matched 0.0.0.0/0 Rule");
+
             return true;
         } else if(address.getAddress()[0] == (byte) 10) {
-            if(Main.debugMode == 1) {
-                Main.logMessage("Matched 10.0.0.0/8 Rule");
-            }
+
+            Main.debugMessage("Matched 10.0.0.0/8 Rule");
+
             // 10.0.0.0/8
             return true;
         } else if(address.getAddress()[0] == (byte) 127) {
-            if(Main.debugMode == 1) {
-                Main.logMessage("Matched 127.0.0.0/8 Rule");
-            }
+
+            Main.debugMessage("Matched 127.0.0.0/8 Rule");
+
             // 127.0.0.0/8
             return true;
         } else if((address.getAddress()[0] == (byte) 192) && address.getAddress()[1] == (byte) 168) {
            // 192.168.0.0/16
-            if(Main.debugMode == 1) {
-                Main.logMessage("Matched 192.168.0.0/16 Rule");
-            }
+
+            Main.debugMessage("Matched 192.168.0.0/16 Rule");
+
            return true;
         }
         // TODO: Add remainder https://ipgeolocation.io/resources/bogon.html
@@ -163,9 +153,9 @@ public class AnteVPN {
     private static boolean checkBadCache(InetAddress address) {
         if(Main.cachedBadAddresses.containsKey(address)) {
             // Cache Hit
-            if(Main.debugMode == 1) {
-                Main.logMessage("Address found in bad cache");
-            }
+
+            Main.debugMessage("Address found in bad cache");
+
             return true;
         }
             return false;
@@ -190,18 +180,14 @@ public class AnteVPN {
                 rows++;
             }
             if(rows > 0) {
+                Main.debugMessage("Address found in bad database");
+                // TODO: Add to bad address cache
                 return true;
             }
 
         } catch (SQLException e) {
-
+                Main.logMessage("Error when looking up address in bad database");
             }
-
-
-
-
-
-
 
         return false;
     }
@@ -257,9 +243,9 @@ public class AnteVPN {
         Integer checkResult = Main.numberChecks;
 
         if(!Main.providerDisabled.containsKey("PROXYCHECK-IO")) {
-            if(Main.debugMode == 1) {
-                Main.logMessage("Trying proxycheck.io...");
-            }
+
+            Main.debugMessage("Trying proxycheck.io...");
+
 
             checkResult = ExternalComms.proxyCheckIo(address);
 
@@ -280,9 +266,9 @@ public class AnteVPN {
         checkResult = 2;
 
         if(!Main.providerDisabled.containsKey("IPTROOPER")) {
-            if(Main.debugMode == 1) {
-                Main.logMessage("Trying IP Trooper...");
-            }
+
+            Main.debugMessage("Trying IP Trooper...");
+
             checkResult = ExternalComms.ipTrooper(address);
 
             if(checkResult == 0) {
@@ -301,9 +287,9 @@ public class AnteVPN {
         checkResult = 2;
 
         if(!Main.providerDisabled.containsKey("IPQUALITYSCORE")) {
-            if(Main.debugMode == 1) {
-                Main.logMessage("Trying IP Quality Score...");
-            }
+
+            Main.debugMessage("Trying IP Quality Score...");
+
             checkResult = ExternalComms.ipQualityScore(address);
 
             if(checkResult == 0) {
