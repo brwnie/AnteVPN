@@ -190,7 +190,7 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQL Lite Database");
         }
 
-        String sql = "INSERT IGNORE INTO ante_good_ip(address) SET(?)";
+        String sql = "INSERT OR IGNORE INTO ante_good_ip(address) SET(?)";
         for(Integer i = 0; i < cachedWhitelistIp.size(); i++) {
                 try (PreparedStatement prepStatement = connection.prepareStatement(sql)) {
                     prepStatement.setString(1, cachedWhitelistIp.get(i).getHostAddress());
@@ -274,7 +274,7 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQL Lite Database");
         }
 
-        String sql = "INSERT IGNORE INTO ante_good_uuid(uuid) SET(?)";
+        String sql = "INSERT OR IGNORE INTO ante_good_uuid(uuid) SET(?)";
         for(Integer i = 0; i < cachedWhitelistUuid.size(); i++) {
             try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
                 prepStatement.setString(1, cachedWhitelistUuid.get(i).toString());
@@ -302,7 +302,7 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQL Lite Database");
         }
 
-        String sql = "INSERT IGNORE INTO ante_bad_address(address, timestamp) SET(?,?)";
+        String sql = "INSERT OR IGNORE INTO ante_bad_address(address, timestamp) SET(?,?)";
         for(Map.Entry<InetAddress, Long> entry : cachedBadAddresses.entrySet()) {
             try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
                 prepStatement.setString(1, entry.getKey().getHostAddress());
