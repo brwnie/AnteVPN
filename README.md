@@ -40,7 +40,9 @@ After first start-up, a SQLite database will be generated along with a configura
 
 The configuration file is used to put the API keys from the various providers so the plugin can communicate with them.
 
-Generally the plugin will block on the first bad result reported, and it requires two successful checks to allow an IP to be authenticated
+The configuration also contains the amount of checks required in order to validate an IP address, by default it is set to 1
+
+Generally the plugin will block on the first bad result reported.
 
 ## Commands
 
