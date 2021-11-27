@@ -186,11 +186,8 @@ public class AnteVPN {
             ResultSet resultSet = prepStatement.executeQuery();
             Integer rows = 0;
             while(resultSet.next()) {
-                rows++;
-            }
-            if(rows > 0) {
                 Main.debugMessage("Address found in bad database");
-                // TODO: Add to bad address cache
+                Main.cachedBadAddresses.put(address, System.currentTimeMillis());
                 return true;
             }
 
