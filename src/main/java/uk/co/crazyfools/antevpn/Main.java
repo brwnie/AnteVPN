@@ -252,6 +252,19 @@ public class Main extends JavaPlugin {
         return null;
     }
 
+    private void addCachedGoodAddress(InetAddress address) {
+        cachedGoodAddresses.put(address, 0L);
+    }
+
+    private InetAddress convertStringToInetAddress(String addressString) {
+        InetAddress address;
+        try {
+            address = InetAddress.getByName(addressString);
+            return address;
+        } catch (UnknownHostException e) {
+            return null;
+        }
+    }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -277,15 +290,24 @@ public class Main extends JavaPlugin {
                 if(sender instanceof Player) {
                     Player player = (Player)sender;
                     if(player.hasPermission("cfuk.avpnadmin")) {
-                        InetAddress address;
-                        try {
-                            address = InetAddress.getByName(args[0]);
-                        } catch (UnknownHostException e) {
-                            sender.sendMessage("Invalid IP address!");
+                        InetAddress address = convertStringToInetAddress(args[0]);
+                        if(address != null) {
+                            addCachedGoodAddress(address);
+                        } else {
+                            sender.sendMessage("Invalid address");
                             return false;
                         }
-                        cachedGoodAddresses.put(address, 0L);
+                        return true;
                     }
+                } else {
+                    InetAddress address = convertStringToInetAddress(args[0]);
+                    if(address != null) {
+                        addCachedGoodAddress(address);
+                    } else {
+                        sender.sendMessage("Invalid address");
+                        return false;
+                    }
+                    return true;
                 }
             }
             return false;
