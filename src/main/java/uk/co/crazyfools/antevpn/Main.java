@@ -158,11 +158,55 @@ public class Main extends JavaPlugin {
     }
 
     private void loadGoodUuids() {
-        // TODO: Complete this function
+        Connection connection = null;
+        String sql = "SELECT uuid from ante_good_uuid;";
+
+        try {
+            connection = DriverManager.getConnection(anteDb);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+            ResultSet results = prepStatement.executeQuery();
+            while(results.next()) {
+                cachedWhitelistUuid.add(UUID.fromString(results.getString("uuid")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadGoodAddresses() {
-        // TODO: Complete this function
+        Connection connection = null;
+        String sql = "SELECT address from ante_good_address;";
+
+        try {
+            connection = DriverManager.getConnection(anteDb);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+            ResultSet results = prepStatement.executeQuery();
+            while(results.next()) {
+                cachedWhitelistIp.add(InetAddress.getByName(results.getString("ip")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
