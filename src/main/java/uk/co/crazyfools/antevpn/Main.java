@@ -196,7 +196,7 @@ public class Main extends JavaPlugin {
         try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
             ResultSet results = prepStatement.executeQuery();
             while(results.next()) {
-                cachedWhitelistIp.add(InetAddress.getByName(results.getString("ip")));
+                cachedWhitelistIp.add(InetAddress.getByName(results.getString("address")));
             }
         } catch (SQLException | UnknownHostException e) {
             e.printStackTrace();
