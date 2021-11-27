@@ -462,9 +462,11 @@ public class Main extends JavaPlugin {
                 Player player = (Player)sender;
                 if(player.hasPermission("cfuk.avpndebug")) {
                     debugModeToggle();
+                    sender.sendMessage("Toggling debug mode");
                     return true;
                 }
             } else {
+                sender.sendMessage("Toggling debug mode");
                 debugModeToggle();
                 return true;
             }
