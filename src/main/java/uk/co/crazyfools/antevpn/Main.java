@@ -45,8 +45,11 @@ public class Main extends JavaPlugin {
     // Addresses that have already been denied by the plugin
     static HashMap<InetAddress, Long> cachedBadAddresses = new HashMap<>();
     // TODO: Occasional Cleanup
+
     // Whitelisted UUIDs
-    static HashMap<UUID, Long> cachedWhitelist = new HashMap<>();
+    // Use this for perm. whitelisted things
+    static List<UUID> cachedWhitelistUuid = new ArrayList<>();
+    static List<UUID> cachedWhitelistIp = new ArrayList<>();
 
     // Violation Flags
     // Number of failed lookups from a provider
@@ -61,15 +64,22 @@ public class Main extends JavaPlugin {
 
     // Log messages to console
     public static void logMessage(String s) {
-        Bukkit.getConsoleSender().sendMessage(s);
+        Bukkit.getConsoleSender().sendMessage("[AVPN] " + s);
+    }
+
+    // Log debug messages to console
+    public static void debugMessage(String s) {
+        if(debugMode == 1) {
+            Bukkit.getConsoleSender().sendMessage("[AVPN-D] " + s);
+        }
     }
 
     private void registerListeners() {
         // Register Event Listeners
 
-        if(Main.debugMode == 1) {
-            logMessage("Registering Listeners");
-        }
+
+        debugMessage("Registering Listeners");
+
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
@@ -314,7 +324,7 @@ public class Main extends JavaPlugin {
     }
 
     private void addCachedGoodAddress(InetAddress address) {
-        cachedGoodAddresses.put(address, 0L);
+        cachedGoodAddresses.put(address, System.currentTimeMillis());
     }
 
     private InetAddress convertStringToInetAddress(String addressString) {

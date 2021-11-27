@@ -55,7 +55,11 @@ public class AnteVPN {
 
     public static boolean isVPN(InetAddress address) {
 
-        // Cheapest: Check GOOD Cache
+        // Step 1: Check manually added UUID cache
+
+        // Step 2: Check manually added IP cache
+
+        // Step 3: Check automatic IP cache
         if(Main.debugMode == 1) {
             Main.logMessage("Checking already permitted addresses...");
         }
@@ -65,6 +69,8 @@ public class AnteVPN {
            }
            return false;
        }
+
+
 
         // Cheap: BOGON Check
         if(Main.debugMode == 1) {
