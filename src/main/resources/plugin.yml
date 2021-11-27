@@ -1,0 +1,11 @@
+main: uk.co.crazyfools.antevpn.Main
+name: AnteVPN
+version: 0.01
+api-version: 1.17
+author: CFUK
+description: Anti VPN plugin
+commands:
+  avpnsim:
+    description: Simulates a player login event
+    usage: /avpnsim 1.2.3.4
+    permission: cfuk.avpnsim
