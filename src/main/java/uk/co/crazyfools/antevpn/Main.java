@@ -430,7 +430,7 @@ public class Main extends JavaPlugin {
                         e.printStackTrace();
                     }
                     logMessage("Trying IP address " + address + " against the VPN checker.");
-                    AnteVPN.isVPN(address, event.getUniqueId());
+                    AnteVPN.isVpn(address, UUID.randomUUID());
                     return true;
                 } else if(args.length == 2) {
                     InetAddress address = null;
