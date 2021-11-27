@@ -134,6 +134,7 @@ public class Main extends JavaPlugin {
 
         String createTableBadAddresses = "CREATE TABLE IF NOT EXISTS ante_bad_address(id integer PRIMARY KEY, address text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
         String createTableGoodUuid = "CREATE TABLE IF NOT EXISTS ante_good_uuid(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
+        String createTableGoodAddress = "CREATE TABLE IF NOT EXISTS ante_good_ip(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
 
         try(Statement statement = connection.createStatement()) {
             try {
@@ -157,6 +158,16 @@ public class Main extends JavaPlugin {
             e.printStackTrace();
         }
 
+        try(Statement statement = connection.createStatement()) {
+            try {
+                statement.execute(createTableGoodAddress);
+            } catch (SQLException e) {
+                logMessage("Error creating Good IP Table");
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
         try {
@@ -244,7 +255,20 @@ public class Main extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(command.getName().equalsIgnoreCase("avpnwhitelist")) {
+        if(command.getName().equalsIgnoreCase("avpnstatus")) {
+            // Shows the service status of the plugin
+            // TODO: Display service status
+            return false;
+        }
+
+        if(command.getName().equalsIgnoreCase("avpnallowip")) {
+            // Adds an IP address to permitted IPs
+            // TODO: Complete Feautre
+            return false;
+        }
+
+        if(command.getName().equalsIgnoreCase("avpnallowuser")) {
+            // Adds a username to permitted UUIDs
             if(args.length == 1) {
                 if (sender instanceof Player) {
                     Player player = (Player)sender;
@@ -264,9 +288,10 @@ public class Main extends JavaPlugin {
         }
 
         if(command.getName().equalsIgnoreCase("avpndebug")) {
+            // Enables debug mode
             if(sender instanceof Player) {
                 Player player = (Player)sender;
-                if(player.hasPermission("CFUK.AVPNDebug")) {
+                if(player.hasPermission("CFUK.avpndebug")) {
                     debugModeToggle();
                     return true;
                 }
@@ -278,6 +303,7 @@ public class Main extends JavaPlugin {
 
 
         if(command.getName().equalsIgnoreCase("avpnsim")) {
+            // Simulates an IP request to a server
             if(debugMode == 1) {
                 if(args.length == 1) {
                     InetAddress address = null;

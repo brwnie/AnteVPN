@@ -55,3 +55,18 @@ Simulates an IP request, requires debug mode to be on
 Usage: /avpndebug
 Permission Required: cfuk.avpndebug
 Turns on debug mode
+
+### avpnallowuser
+Usage: /avpnallowuser <playername>
+Permission Required: cfuk.avpnadmin
+Skips a user from being checked
+
+### avpnallowip
+Usage: /avpnallowip <ip-address>
+Permission Required: cfuk.avpnadmin
+Skips an IP address host from being checked
+
+### avpnstatus
+Usage: /avpnstatus
+Permissions Required: cfuk.avpnadmin
+Shows the service status of the plugin

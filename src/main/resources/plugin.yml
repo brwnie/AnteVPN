@@ -8,8 +8,20 @@ commands:
   avpnsim:
     description: Simulates a player login event
     usage: /avpnsim 1.2.3.4
-    permission: cfuk.avpnsim
+    permission: cfuk.avpndebug
   avpndebug:
     description: Toggles debug mode on the plugin
     usage: /avpndebug
-    permission: cfuk.AVPNDebug
+    permission: cfuk.avpndebug
+  avpnallowuser:
+    description: Whitelists a user on the AnteVPN plugin
+    usage: /avpnallowuser <playername>
+    permission: cfuk.avpnadmin
+  avpnallowip:
+    description: Whitelists a single IP address on the AnteVPN plugin
+    usage: /avpnallowip <ip>
+    permission: cfuk.avpnadmin
+  avpnstatus:
+    description: Shows the service status of the plugin
+    usage: /avpnstatus
+    permission: cfuk.avpnadmin
