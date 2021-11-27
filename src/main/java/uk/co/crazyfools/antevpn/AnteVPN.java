@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class AnteVPN {
 
-    private static boolean onWhiteListDatabase(UUID playerUuid) {
+    private static boolean onWhiteListUuidDatabase(UUID playerUuid) {
 
         Connection connection = null;
         String sql = "SELECT address from ante_good_uuid WHERE uuid=?";
@@ -30,13 +30,13 @@ public class AnteVPN {
             }
 
         } catch (SQLException e) {
-
+            Main.logMessage("SQL error whilst checking whitelisted UUID database");
         }
 
         return false;
     }
 
-    public static boolean onWhitelist(UUID playerUuid) {
+    public static boolean onUUIDWhitelist(UUID playerUuid) {
         // Check online cache
         if(Main.cachedWhitelist.containsKey(playerUuid)) {
             // Update the time since the cache was used
@@ -44,9 +44,9 @@ public class AnteVPN {
             return true;
         }
         // Check database
-        if(onWhiteListDatabase(playerUuid)) {
+        if(onWhiteListUuidDatabase(playerUuid)) {
             // Put the UUID into cache for quicker lookups in future
-            Main.cachedWhitelist.put(playerUuid, System.currentTimeMillis());
+            Main.cachedWhitelist.put(playerUuid, 0L);
             return true;
         }
 
@@ -54,7 +54,8 @@ public class AnteVPN {
     }
 
     public static boolean isVPN(InetAddress address) {
-        // Cheapest: Check GOOD database
+
+        // Cheapest: Check GOOD Cache
         if(Main.debugMode == 1) {
             Main.logMessage("Checking already permitted addresses...");
         }
@@ -73,6 +74,7 @@ public class AnteVPN {
             // Address is a BOGON
             return false;
         }
+
         // Cheap: Cache Check
         if(Main.debugMode == 1) {
             Main.logMessage("Running CACHE check");
@@ -109,7 +111,7 @@ public class AnteVPN {
     private static boolean checkGoodCache(InetAddress address) {
         if(Main.cachedGoodAddresses.containsKey(address)) {
             // Check age on the address
-            if(System.currentTimeMillis() > Main.cachedGoodAddresses.get(address) + 86400000) {
+            if(Main.cachedGoodAddresses.get(address) != 0L && System.currentTimeMillis() > Main.cachedGoodAddresses.get(address) + 86400000) {
                 // TODO: Periodic cleanup
                 Main.cachedGoodAddresses.remove(address);
                 return false;
@@ -120,6 +122,7 @@ public class AnteVPN {
 
         return false;
     }
+
     private static boolean checkBogons(InetAddress address) {
         if(address.getAddress()[0] == (byte) 0) {
             // 0.0.0.0/0
@@ -312,6 +315,52 @@ public class AnteVPN {
 
         Main.logMessage("List of IP reputation providers has been exhausted...");
         // No VPN detected after using all providers
+        return false;
+    }
+
+    public static boolean onAddressWhitelist(InetAddress address) {
+        // Check online cache
+        if(Main.cachedGoodAddresses.containsKey(address)) {
+            // Update the time since the cache was used
+            Main.cachedGoodAddresses.replace(address, System.currentTimeMillis());
+            return true;
+        }
+        // Check database
+        if(onWhiteListAddressDatabase(address)) {
+            // Put the UUID into cache for quicker lookups in future
+            Main.cachedGoodAddresses.put(address, System.currentTimeMillis());
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean onWhiteListAddressDatabase(InetAddress address) {
+
+        Connection connection = null;
+        String sql = "SELECT address from ante_good_ip WHERE address=?";
+
+        try {
+            connection = DriverManager.getConnection(Main.anteDb);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+            prepStatement.setString(1, address.getHostAddress());
+            ResultSet resultSet = prepStatement.executeQuery();
+            Integer rows = 0;
+            while(resultSet.next()) {
+                rows++;
+            }
+            if(rows > 0) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            Main.logMessage("SQL error whilst checking whitelisted address database");
+        }
+
         return false;
     }
 }

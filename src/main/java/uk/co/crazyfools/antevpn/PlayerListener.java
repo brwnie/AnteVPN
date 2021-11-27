@@ -19,7 +19,7 @@ public class PlayerListener implements Listener {
         if(Main.debugMode == 1) {
             Main.logMessage("Login event detected: " + event.getName());
         }
-        if(!AnteVPN.onWhitelist(event.getUniqueId())) {
+        if(!AnteVPN.onUUIDWhitelist(event.getUniqueId()) || !AnteVPN.onAddressWhitelist(event.getAddress())) {
             if (AnteVPN.isVPN(playerIp)) {
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Component.text("VPN Detected!"));
             }

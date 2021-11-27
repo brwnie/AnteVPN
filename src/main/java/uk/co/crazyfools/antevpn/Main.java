@@ -129,9 +129,17 @@ public class Main extends JavaPlugin {
         loadPluginOptions();
         // Create database tables if not already existing
         createDatabase();
-        // Loading player whitelist and good IP addresses will be done from IsVPN()
+        // Loading player whitelist and good IP addresses into memory
+        loadGoodAddresses();
+        loadGoodUuids();
     }
 
+    private void loadGoodUuids() {
+
+    }
+
+    private void loadGoodAddresses() {
+    }
 
 
     public void onDisable() {
@@ -338,6 +346,7 @@ public class Main extends JavaPlugin {
 
         if(command.getName().equalsIgnoreCase("avpnallowip")) {
             // Adds an IP address to permitted IPs
+            // TODO: Add straight to database?
             if(args.length == 1) {
                 if(sender instanceof Player) {
                     Player player = (Player)sender;
@@ -367,6 +376,7 @@ public class Main extends JavaPlugin {
 
         if(command.getName().equalsIgnoreCase("avpnallowuser")) {
             // Adds a username to permitted UUIDs
+            // TODO: Add straight to database?
             if(args.length == 1) {
                 if (sender instanceof Player) {
                     Player player = (Player)sender;
