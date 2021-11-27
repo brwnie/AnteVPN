@@ -32,6 +32,7 @@ public class Main extends JavaPlugin {
 
     // Number of checks to pass validation
     static Integer numberChecks = 1;
+    // TODO: Bugfix, minimum is still two for some reason
 
     // Databases
     // URL of central database
