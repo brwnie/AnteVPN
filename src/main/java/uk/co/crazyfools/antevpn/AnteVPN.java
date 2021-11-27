@@ -38,15 +38,14 @@ public class AnteVPN {
 
     public static boolean onUUIDWhitelist(UUID playerUuid) {
         // Check online cache
-        if(Main.cachedWhitelist.containsKey(playerUuid)) {
-            // Update the time since the cache was used
-            Main.cachedWhitelist.replace(playerUuid, System.currentTimeMillis());
+        if(Main.cachedWhitelistUuid.contains(playerUuid)) {
             return true;
         }
+        
         // Check database
         if(onWhiteListUuidDatabase(playerUuid)) {
             // Put the UUID into cache for quicker lookups in future
-            Main.cachedWhitelist.put(playerUuid, 0L);
+            Main.cachedWhitelistUuid.add(playerUuid);
             return true;
         }
 

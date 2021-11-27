@@ -49,7 +49,7 @@ public class Main extends JavaPlugin {
     // Whitelisted UUIDs
     // Use this for perm. whitelisted things
     static List<UUID> cachedWhitelistUuid = new ArrayList<>();
-    static List<UUID> cachedWhitelistIp = new ArrayList<>();
+    static List<InetAddress> cachedWhitelistIp = new ArrayList<>();
 
     // Violation Flags
     // Number of failed lookups from a provider
@@ -262,11 +262,10 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQL Lite Database");
         }
 
-        String sql = "INSERT IGNORE INTO ante_good_uuid(uuid, timestamp) SET(?,?)";
-        for(Map.Entry<UUID, Long> entry : cachedWhitelist.entrySet()) {
+        String sql = "INSERT IGNORE INTO ante_good_uuid(uuid) SET(?)";
+        for(Integer i = 0; i < cachedWhitelistUuid.size(); i++) {
             try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
-                prepStatement.setString(1, entry.getKey().toString());
-                prepStatement.setInt(2, entry.getValue().intValue());
+                prepStatement.setString(1, cachedWhitelistUuid.get(i).toString());
                 prepStatement.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -363,7 +362,7 @@ public class Main extends JavaPlugin {
                     if(player.hasPermission("cfuk.avpnadmin")) {
                         InetAddress address = convertStringToInetAddress(args[0]);
                         if(address != null) {
-                            addCachedGoodAddress(address);
+                            cachedWhitelistIp.add(address);
                         } else {
                             sender.sendMessage("Invalid address");
                             return false;
@@ -373,7 +372,7 @@ public class Main extends JavaPlugin {
                 } else {
                     InetAddress address = convertStringToInetAddress(args[0]);
                     if(address != null) {
-                        addCachedGoodAddress(address);
+                        cachedWhitelistIp.add(address);
                     } else {
                         sender.sendMessage("Invalid address");
                         return false;
@@ -392,12 +391,12 @@ public class Main extends JavaPlugin {
                     Player player = (Player)sender;
                     if(player.hasPermission("cfuk.avpnadmin")) {
                        UUID targetUuid = getUuid(args[0]);
-                       cachedWhitelist.put(targetUuid, System.currentTimeMillis());
+                       cachedWhitelistUuid.add(targetUuid);
                        return true;
                     }
                 } else {
                         UUID targetUuid = getUuid(args[0]);
-                        cachedWhitelist.put(targetUuid, System.currentTimeMillis());
+                        cachedWhitelistUuid.add(targetUuid);
                         return true;
 
                 }
@@ -468,7 +467,8 @@ public class Main extends JavaPlugin {
         sender.sendMessage("---");
         sender.sendMessage("Number of IPs in good cache: " + cachedGoodAddresses.size());
         sender.sendMessage("Number of IPs in bad cache: " + cachedBadAddresses.size());
-        sender.sendMessage("Number of usernames in whitelist: " + cachedWhitelist.size());
+        sender.sendMessage("Number of usernames in saved whitelist: " + cachedWhitelistUuid.size());
+        sender.sendMessage("Number of IPs in saved whitelist: " + cachedWhitelistIp.size());
         sender.sendMessage("Number of disabled providers:" + providerDisabled.size());
         sender.sendMessage("---");
     }
@@ -477,7 +477,7 @@ public class Main extends JavaPlugin {
         if(debugMode == 0) {
             debugMode = 1;
         } else {
-            debugMode = 2;
+            debugMode = 0;
         }
     }
 }
