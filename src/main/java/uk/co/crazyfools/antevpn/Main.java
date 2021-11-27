@@ -103,7 +103,7 @@ public class Main extends JavaPlugin {
                providerKeys.put("PROXYCHECK-IO", proxyCheckIo);
            }
            if(!ipQualityScore.isEmpty()) {
-               providerKeys.put("ipQualityScore", ipQualityScore);
+               providerKeys.put("IPQUALITYSCORE", ipQualityScore);
            }
 
         } else {

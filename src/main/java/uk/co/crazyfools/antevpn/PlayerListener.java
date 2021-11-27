@@ -14,11 +14,11 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
-        // TODO: Allow bypass if player has permission
+
         InetAddress playerIp = event.getAddress();
-        if(Main.debugMode == 1) {
-            Main.logMessage("Login event detected: " + event.getName());
-        }
+
+        Main.debugMessage("Login event detected: " + event.getName());
+
         if(!AnteVPN.onUUIDWhitelist(event.getUniqueId()) || !AnteVPN.onAddressWhitelist(event.getAddress())) {
             if (AnteVPN.isVPN(playerIp)) {
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Component.text("VPN Detected!"));
