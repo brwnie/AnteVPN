@@ -41,3 +41,17 @@ After first start-up, a SQLite database will be generated along with a configura
 The configuration file is used to put the API keys from the various providers so the plugin can communicate with them.
 
 Generally the plugin will block on the first bad result reported, and it requires two successful checks to allow an IP to be authenticated
+
+## Commands
+
+### avpnsim
+Usage: /avpnsim <required: ip-address> [optional: provider]
+Example: /avpn 1.2.3.4
+Permission Required: cfuk.avpndebug
+
+Simulates an IP request, requires debug mode to be on
+
+### avpndebug
+Usage: /avpndebug
+Permission Required: cfuk.avpndebug
+Turns on debug mode
