@@ -99,10 +99,16 @@ public class Main extends JavaPlugin {
 
            numberChecks = pluginOptions.getInt("Options.Checks.Setting");
 
-           if(!proxyCheckIo.isEmpty()) {
+           if(!proxyCheckIo.isEmpty() || !pluginOptions.getBoolean("API.PROXYCHECK-IO.Enabled")) {
+               logMessage("Disabling Proxycheck.io")
                providerKeys.put("PROXYCHECK-IO", proxyCheckIo);
            }
-           if(!ipQualityScore.isEmpty()) {
+
+            if(!pluginOptions.getBoolean("IPTROOPER.Enabled")) {
+                providerKeys.put("TROOPER", ipQualityScore);
+            }
+
+           if(!ipQualityScore.isEmpty() || !pluginOptions.getBoolean("IPQUALITYSCORE.Enabled")) {
                providerKeys.put("IPQUALITYSCORE", ipQualityScore);
            }
 

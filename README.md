@@ -1,6 +1,8 @@
 # AnteVPN
 
-This is the GitHub page of the plugin 'AnteVPN'. AnteVPN is currently in development and is not suitable for use on production servers.
+This is the GitHub page of the plugin 'AnteVPN'. 
+
+AnteVPN is currently in development and is not suitable for use on production servers.
 
 ## What/Who/Why
 
@@ -48,27 +50,37 @@ Generally the plugin will block on the first bad result reported.
 
 ### avpnsim
 Usage: /avpnsim <required: ip-address> [optional: provider]
+
 Example: /avpn 1.2.3.4
+
 Permission Required: cfuk.avpndebug
 
 Simulates an IP request, requires debug mode to be on
 
 ### avpndebug
 Usage: /avpndebug
+
 Permission Required: cfuk.avpndebug
+
 Turns on debug mode
 
 ### avpnallowuser
 Usage: /avpnallowuser <playername>
+
 Permission Required: cfuk.avpnadmin
+
 Skips a user from being checked
 
 ### avpnallowip
 Usage: /avpnallowip <ip-address>
+
 Permission Required: cfuk.avpnadmin
+
 Skips an IP address host from being checked
 
 ### avpnstatus
 Usage: /avpnstatus
+
 Permissions Required: cfuk.avpnadmin
+
 Shows the service status of the plugin
