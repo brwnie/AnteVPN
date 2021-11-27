@@ -1,6 +1,7 @@
 package uk.co.crazyfools.antevpn;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,8 +15,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Main extends JavaPlugin {
     // PLUGIN NOT SAFE FOR HUMAN OR MACHINE CONSUMPTION
@@ -27,27 +27,36 @@ public class Main extends JavaPlugin {
 
     // This plugin
     static Plugin plugin;
-    static Integer debugMode = 1;
+    // Enable debug mode
+    static Integer debugMode = 0;
 
     // Databases
+    // URL of central database
     static String anteDb = "jdbc:sqlite:plugins/AnteVPN/anteDb.db";
 
     // Caching
+    // Number of approvals an IP address has had
     static HashMap<InetAddress, Integer> totalAddressChecks = new HashMap<InetAddress, Integer>();
+    // Addresses that have already been approved by the plugin
     static HashMap<InetAddress, Long> cachedGoodAddresses = new HashMap<InetAddress, Long>();
+    // Addresses that have already been denied by the plugin
     static HashMap<InetAddress, Long> cachedBadAddresses = new HashMap<InetAddress, Long>();
+    // TODO: Occasional Cleanup
+    // Whitelisted UUIDs
+    static HashMap<UUID, Long> cachedWhitelist = new HashMap<UUID, Long>();
 
     // Violation Flags
+    // Number of failed lookups from a provider
     static HashMap<String, Integer> providerViolations = new HashMap<String, Integer>();
 
-    // Toggles for VPN Checker Providers
+    // Toggles for VPN Checker Providers is disabled or not
     static HashMap<String, Long> providerDisabled = new HashMap<String, Long>();
 
 
     // API Keys for VPNs
     static HashMap<String, String> providerKeys = new HashMap<String, String>();
 
-
+    // Log messages to console
     public static void logMessage(String s) {
         Bukkit.getConsoleSender().sendMessage(s);
     }
@@ -111,6 +120,7 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         logMessage("AnteVPN is now shutting down...");
         saveBadToDatabase();
+        saveWhitelistToDatabase();
     }
 
     private void createDatabase() {
@@ -121,7 +131,9 @@ public class Main extends JavaPlugin {
             System.out.println(e.getMessage());
             logMessage("Could not connect to SQLite Database!");
         }
+
         String createTableBadAddresses = "CREATE TABLE IF NOT EXISTS ante_bad_address(id integer PRIMARY KEY, address text NOT NULL UNIQUE, timestamp NUMERIC NOT NULL);";
+        String createTableGoodUuid = "CREATE TABLE IF NOT EXISTS ante_good_uuid(id integer PRIMARY KEY, uuid text NOT NULL UNIQUE";
 
         try(Statement statement = connection.createStatement()) {
             try {
@@ -134,6 +146,50 @@ public class Main extends JavaPlugin {
             e.printStackTrace();
         }
 
+        try(Statement statement = connection.createStatement()) {
+            try {
+                statement.execute(createTableGoodUuid);
+            } catch (SQLException e) {
+                logMessage("Error creating Good Uuid Table");
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveWhitelistToDatabase() {
+        Main.logMessage("Saving UUIDs to database");
+        // Save bad addresses to database
+        // TODO: Create and periodic save
+        Main.logMessage("Saving bad addresses into database");
+
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(anteDb);
+        } catch (SQLException e) {
+            logMessage("Could not connect to SQL Lite Database");
+        }
+
+        String sql = "INSERT IGNORE INTO ante_good_uuid(uuid, timestamp) SET(?,?)";
+        for(Map.Entry<UUID, Long> entry : cachedWhitelist.entrySet()) {
+            try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+                prepStatement.setString(1, entry.getKey().toString());
+                prepStatement.setInt(2, entry.getValue().intValue());
+                prepStatement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         try {
             connection.close();
         } catch (SQLException e) {
@@ -154,7 +210,7 @@ public class Main extends JavaPlugin {
             logMessage("Could not connect to SQL Lite Database");
         }
 
-        String sql = "INSERT IGNORE INTO ante_bad_address(address, timestamp) SET(?,?,?)";
+        String sql = "INSERT IGNORE INTO ante_bad_address(address, timestamp) SET(?,?)";
         for(Map.Entry<InetAddress, Long> entry : cachedBadAddresses.entrySet()) {
             try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
                 prepStatement.setString(1, entry.getKey().getHostAddress());
@@ -171,7 +227,41 @@ public class Main extends JavaPlugin {
         }
     }
 
+
+
+    public UUID getUuid(String playerName) {
+        // Returns the UUID of a Player
+        if(Bukkit.getPlayer(playerName) != null) {
+            Player player = Bukkit.getPlayer(playerName);
+            return player.getUniqueId();
+        } else if(Bukkit.getOfflinePlayerIfCached(playerName) != null) {
+            OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(playerName);
+            return player.getUniqueId();
+        }
+        return null;
+    }
+
+
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        if(command.getName().equalsIgnoreCase("avpnwhitelist")) {
+            if(args.length == 1) {
+                if (sender instanceof Player) {
+                    Player player = (Player)sender;
+                    if(player.hasPermission("CFUK.AVPNWhitelist")) {
+                       UUID targetUuid = getUuid(args[0]);
+                       cachedWhitelist.put(targetUuid, System.currentTimeMillis());
+                       return true;
+                    }
+                } else {
+                        UUID targetUuid = getUuid(args[0]);
+                        cachedWhitelist.put(targetUuid, System.currentTimeMillis());
+                        return true;
+
+                }
+            }
+            return false;
+        }
 
         if(command.getName().equalsIgnoreCase("avpndebug")) {
             if(sender instanceof Player) {

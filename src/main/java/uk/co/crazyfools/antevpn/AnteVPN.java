@@ -3,8 +3,55 @@ package uk.co.crazyfools.antevpn;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.*;
+import java.util.UUID;
 
 public class AnteVPN {
+
+    private static boolean onWhiteListDatabase(UUID playerUuid) {
+
+        Connection connection = null;
+        String sql = "SELECT address from ante_good_uuid WHERE uuid=?";
+
+        try {
+            connection = DriverManager.getConnection(Main.anteDb);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try(PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+            prepStatement.setString(1, playerUuid.toString());
+            ResultSet resultSet = prepStatement.executeQuery();
+            Integer rows = 0;
+            while(resultSet.next()) {
+                rows++;
+            }
+            if(rows > 0) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+
+        }
+
+        return false;
+    }
+
+    public static boolean onWhitelist(UUID playerUuid) {
+        // Check online cache
+        if(Main.cachedWhitelist.containsKey(playerUuid)) {
+            // Update the time since the cache was used
+            Main.cachedWhitelist.replace(playerUuid, System.currentTimeMillis());
+            return true;
+        }
+        // Check database
+        if(onWhiteListDatabase(playerUuid)) {
+            // Put the UUID into cache for quicker lookups in future
+            Main.cachedWhitelist.put(playerUuid, System.currentTimeMillis());
+            return true;
+        }
+
+        return false;
+    }
 
     public static boolean isVPN(InetAddress address) {
         // Cheapest: Check GOOD database
