@@ -258,6 +258,16 @@ public class Main extends JavaPlugin {
         if(command.getName().equalsIgnoreCase("avpnstatus")) {
             // Shows the service status of the plugin
             // TODO: Display service status
+            if(sender instanceof Player) {
+              Player player = (Player)sender;
+              if(player.hasPermission("cfuk.avpnadmin")) {
+                  displayServiceStatus(sender);
+                  return true;
+              }
+            } else {
+                displayServiceStatus(sender);
+                return true;
+            }
             return false;
         }
 
@@ -342,6 +352,14 @@ public class Main extends JavaPlugin {
         }
         // No commands matched here
         return false;
+    }
+
+    private void displayServiceStatus(CommandSender sender) {
+        sender.sendMessage("AnteVPN");
+        sender.sendMessage("Number of IPs in good cache: " + cachedGoodAddresses.size());
+        sender.sendMessage("Number of IPs in bad cache: " + cachedBadAddresses.size());
+        sender.sendMessage("Number of usernames in whitelist: " + cachedWhitelist.size());
+        sender.sendMessage("Number of disabled providers:" + providerDisabled.size());
     }
 
     private void debugModeToggle() {
