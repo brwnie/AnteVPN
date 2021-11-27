@@ -52,9 +52,8 @@ public class ExternalComms {
         if(jsonObject.containsKey("bad")) {
             if(jsonObject.get("bad").toString().equalsIgnoreCase("true")) {
                 if(jsonObject.get("type").toString().equalsIgnoreCase("proxy")) {
-                    if(Main.debugMode == 1) {
-                        Main.logMessage("IPTrooper: VPN Detected on " + address.getHostAddress() + "!");
-                    }
+
+                        Main.debugMessage("IPTrooper: VPN Detected on " + address.getHostAddress() + "!");
                     return 1;
                 }
             }
@@ -82,9 +81,7 @@ public class ExternalComms {
 
             if (jsonObject.containsKey("proxy")) {
                 if (jsonObject.get("proxy").toString().equalsIgnoreCase("true")) {
-                    if (Main.debugMode == 1) {
-                        Main.logMessage("IPQualityScore.com: VPN Detected on " + address.getHostAddress() + "!");
-                    }
+                        Main.debugMessage("IPQualityScore.com: VPN Detected on " + address.getHostAddress() + "!");
                     return 1;
                 }
             } else {
@@ -122,15 +119,11 @@ public class ExternalComms {
         // Now checking for VPN
 
         if(jsonResponse.containsKey(address.getHostAddress())) {
-            if(Main.debugMode == 1) {
-                Main.logMessage("Address value found");
-            }
+                Main.debugMessage("Address value found");
             JSONObject jsonAddress = (JSONObject) jsonResponse.get(address.getHostAddress());
             if(jsonAddress.containsKey("proxy")) {
                 if(jsonAddress.get("proxy").toString().equalsIgnoreCase("yes")) {
-                    if(Main.debugMode == 1) {
-                        Main.logMessage("ProxyCheck: VPN Detected on " + address.getHostAddress() + "!");
-                    }
+                        Main.debugMessage("ProxyCheck: VPN Detected on " + address.getHostAddress() + "!");
                     return 1;
                 }
             }
