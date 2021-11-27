@@ -245,7 +245,7 @@ public class AnteVPN {
         // Return 'true' for VPN
         // Return 'false' for no VPN
 
-        Integer checkResult = 2;
+        Integer checkResult = Main.numberChecks;
 
         if(!Main.providerDisabled.containsKey("PROXYCHECK-IO")) {
             if(Main.debugMode == 1) {

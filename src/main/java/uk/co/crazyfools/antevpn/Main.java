@@ -30,6 +30,9 @@ public class Main extends JavaPlugin {
     // Enable debug mode
     static Integer debugMode = 0;
 
+    // Number of checks to pass validation
+    static Integer numberChecks = 1;
+
     // Databases
     // URL of central database
     static String anteDb = "jdbc:sqlite:plugins/AnteVPN/anteDb.db";
