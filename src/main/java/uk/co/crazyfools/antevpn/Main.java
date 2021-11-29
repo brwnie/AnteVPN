@@ -84,7 +84,7 @@ public class Main extends JavaPlugin {
 
         debugMessage("Registering Tasks");
 
-        Bukkit.getServer().getScheduler().runTaskTimer(new cacheCleanup(), 3600, 3600);
+        Bukkit.getServer().getScheduler().runTaskTimer(plugin, new cacheCleanup(), 3600, 3600);
 
     }
 
