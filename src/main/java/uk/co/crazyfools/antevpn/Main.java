@@ -81,6 +81,11 @@ public class Main extends JavaPlugin {
         debugMessage("Registering Listeners");
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
+        debugMessage("Registering Tasks");
+
+        Bukkit.getServer().getScheduler().runTaskTimer(new cacheCleanup(), 3600, 3600);
+
     }
 
     private void loadPluginOptions() {
