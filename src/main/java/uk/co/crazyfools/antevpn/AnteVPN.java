@@ -32,6 +32,14 @@ public class AnteVPN {
             Main.logMessage("SQL error whilst checking whitelisted UUID database");
         }
 
+        if(connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         return false;
     }
 
@@ -194,6 +202,14 @@ public class AnteVPN {
         } catch (SQLException e) {
                 Main.logMessage("Error when looking up address in bad database");
             }
+
+        if(connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         return false;
     }
@@ -358,6 +374,14 @@ public class AnteVPN {
 
         } catch (SQLException e) {
             Main.logMessage("SQL error whilst checking whitelisted address database");
+        }
+
+        if(connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return false;
